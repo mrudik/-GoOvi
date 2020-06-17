@@ -4,8 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
+import com.mrudik.goovi.service.LoadOviStatWorker
 import com.mrudik.goovi.stats.StatsActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -20,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        startSync()
         showStatsScreen()
     }
 
@@ -39,5 +45,17 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }
         handler.postDelayed(runnable, DELAY)
+    }
+
+    private fun startSync() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val loadOviStatWorkRequest = OneTimeWorkRequest.Builder(LoadOviStatWorker::class.java)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(loadOviStatWorkRequest)
     }
 }

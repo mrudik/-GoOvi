@@ -12,4 +12,7 @@ interface ApiService {
 
     @GET("people/{playerId}")
     fun loadPlayerInfo(@Path("playerId") playerId: Int) : Observable<FullPlayerInfo>
+
+    @GET("people/{playerId}/stats?stats=yearByYear")
+    fun loadPlayerStatsTest(@Path("playerId") playerId: Int) : FullStat
 }
