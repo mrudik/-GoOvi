@@ -1,4 +1,4 @@
-package com.mrudik.goovi.stats.dagger
+package com.mrudik.goovi.stats
 
 import android.content.Context
 import com.mrudik.goovi.R

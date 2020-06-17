@@ -20,9 +20,11 @@ import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
 import com.mrudik.goovi.stats.adapter.StatPerYearAdapter
 import com.mrudik.goovi.stats.adapter.StatPerYearItem
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_stats.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class StatsActivity : AppCompatActivity(), StatsContract.View {
     companion object {
         const val KEY_PLAYED_ID = "playedIdKey"
@@ -42,9 +44,6 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
         }
-
-        val app = application as App
-        app.getAppComponent().createStatsSubComponent().inject(this)
 
         presenter.takeView(this)
         presenter.start(playerId)

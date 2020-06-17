@@ -3,21 +3,22 @@ package com.mrudik.goovi.dagger.module
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.api.ApiService
-import com.mrudik.goovi.dagger.AppScope
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class NetworkModule {
-    @AppScope
+object NetworkModule {
+    @Singleton
     @Provides
     fun provideOkHttpClient() : OkHttpClient {
         return OkHttpClient.Builder()
@@ -27,7 +28,7 @@ class NetworkModule {
             .build()
     }
 
-    @AppScope
+    @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit {
         return Retrofit.Builder()
@@ -38,7 +39,7 @@ class NetworkModule {
             .build()
     }
 
-    @AppScope
+    @Singleton
     @Provides
     fun provideAPiService(retrofit: Retrofit) : ApiService {
         return retrofit.create(ApiService::class.java)
