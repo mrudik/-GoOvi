@@ -1,0 +1,33 @@
+<resources>
+    <!-- Ovechkin theme. -->
+    <style name="OviTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryOvi</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkOvi</item>
+        <item name="colorAccent">@color/colorAccentOvi</item>
+        <item name="colorPrimaryTheme">@color/colorPrimaryOvi</item>
+        <item name="photoPrimaryTheme">@drawable/ovi_photo</item>
+        <item name="backgroundPrimaryTheme">@drawable/background_ovi</item>
+        <item name="titlePrimaryTheme">@string/alex_ovechkin_number_8</item>
+    </style>
+
+    <!--Gretzky theme-->
+    <style name="GretzkyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryGretzky</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkGretzky</item>
+        <item name="colorAccent">@color/colorAccentGretzky</item>
+        <item name="colorPrimaryTheme">@color/colorPrimaryGretzky</item>
+        <item name="photoPrimaryTheme">@drawable/gretzky_photo</item>
+        <item name="backgroundPrimaryTheme">@drawable/background_gretzky</item>
+        <item name="titlePrimaryTheme">@string/wayne_gretzky_number_99</item>
+    </style>
+
+    <!-- Splash screen -->
+    <style name="OviTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+</resources>

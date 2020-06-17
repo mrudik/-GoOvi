@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryOvi">#C8102E</color>
+    <color name="colorPrimaryDarkOvi">#C8102E</color>
+    <color name="colorAccentOvi">#C8102E</color>
+
+    <color name="colorPrimaryGretzky">#003F8A</color>
+    <color name="colorPrimaryDarkGretzky">#003F8A</color>
+    <color name="colorAccentGretzky">#003F8A</color>
+
+    <color name="colorTextPrimary">#99000000</color>
+    <color name="colorDivider">#DDD</color>
+</resources>
