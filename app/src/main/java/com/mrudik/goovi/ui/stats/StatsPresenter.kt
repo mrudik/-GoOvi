@@ -169,7 +169,10 @@ class StatsPresenter(
             }
             else -> {
                 view?.showGoalsDescriptionWithOvechkinSpan(
-                    content.getTemplateGoalsLessThanOvechkin()
+                    String.format(
+                        content.getTemplateGoalsLessThanOvechkin(),
+                        oviTotalGoals - gretzkyTotalGoals
+                    )
                 )
             }
         }

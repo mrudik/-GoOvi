@@ -12,9 +12,6 @@ interface DBPlayerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(league: DBPlayer)
 
-    @Query("SELECT * FROM DBPlayer WHERE playerId = :playerId")
-    fun getPlayer(playerId: Int) : Flowable<DBPlayer>
-
     @Query("SELECT * FROM DBPlayer")
     fun getPlayers() : Flowable<List<DBPlayer>>
 }
