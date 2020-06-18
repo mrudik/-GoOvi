@@ -40,6 +40,13 @@ class StatsPresenter(
         loadCopyright()
     }
 
+    override fun playerNameClickAction() {
+        when (playerId) {
+            Const.OVECHKIN_PLAYER_ID -> view?.showGretzkyScreen()
+            Const.GRETZKY_PLAYER_ID -> view?.closeScreen()
+        }
+    }
+
     private fun setTitle() {
         when (playerId) {
             Const.OVECHKIN_PLAYER_ID -> view?.setScreenTitle(content.getAlexOvechkinTitle())
@@ -156,10 +163,14 @@ class StatsPresenter(
                 view?.showGoalsDescription(content.getNHLAllTimeLeadingGoalScorer())
             }
             gretzkyTotalGoals == oviTotalGoals -> {
-                TODO("Equal with Ovi")
+                view?.showGoalsDescriptionWithOvechkinSpan(
+                    content.getTheSameAsOvechkin()
+                )
             }
             else -> {
-                TODO("Less than Ovi")
+                view?.showGoalsDescriptionWithOvechkinSpan(
+                    content.getTemplateGoalsLessThanOvechkin()
+                )
             }
         }
     }
@@ -185,6 +196,6 @@ class StatsPresenter(
     }
 
     private fun showCopyright(dbLeague: DBLeague) {
-        view?.showCopyright(dbLeague.copyright ?: "")
+        view?.showCopyright(dbLeague.copyright ?: content.getCopyright())
     }
 }

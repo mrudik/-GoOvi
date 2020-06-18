@@ -2,14 +2,20 @@
     <string name="app_name">#GoOvi</string>
     <string name="alex_ovechkin_number_8">Alex Ovechkin #8</string>
     <string name="wayne_gretzky_number_99">Wayne Gretzky #99</string>
+
     <string name="template_goals_to_gretzky">%1$s goals to Wayne Gretzky</string>
     <string name="template_goals_more_than_gretzky">%1$s goals more than Wayne Gretzky</string>
     <string name="the_same_as_gretzky">The same as Wayne Gretzky</string>
+
     <string name="nhl_all_time_leading_goal_scorer">NHL’s all-time leading goal scorer</string>
+    <string name="template_goals_less_than_ovechkin">%1$s goals less than Alex Ovechkin</string>
+    <string name="the_same_as_ovechkin">The same as Alex Ovechkin</string>
+
     <string name="games_played">Games Played</string>
     <string name="goals">Goals</string>
     <string name="assists">Assists</string>
     <string name="points">Points</string>
     <string name="network_loading_error">Network loading error</string>
-    <string name="title_activity_splash">FullscreenActivity</string>
+
+    <string name="copyright">NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2020. All Rights Reserved.</string>
 </resources>

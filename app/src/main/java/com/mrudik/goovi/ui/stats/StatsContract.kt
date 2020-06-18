@@ -7,6 +7,7 @@ interface StatsContract {
         fun start(playerId: Int)
         fun takeView(view: View)
         fun clearView()
+        fun playerNameClickAction()
     }
 
     interface View {
@@ -15,9 +16,12 @@ interface StatsContract {
         fun showTotalGoals(goals: Int)
         fun showGoalsDescription(description: String)
         fun showGoalsDescriptionWithGretzkySpan(description: String)
+        fun showGoalsDescriptionWithOvechkinSpan(description: String)
         fun showStatPerYear(statPerYearList: ArrayList<StatPerYearItem>)
         fun showStatPerYearNotAvailableError()
         fun showCopyright(copyright: String)
+        fun showGretzkyScreen()
+        fun closeScreen()
     }
 
     interface Content {
@@ -28,5 +32,8 @@ interface StatsContract {
         fun getTemplateGoalsMoreThanGretzky() : String
         fun getTheSameAsGretzky() : String
         fun getNetworkLoadingError() : String
+        fun getTheSameAsOvechkin() : String
+        fun getTemplateGoalsLessThanOvechkin() : String
+        fun getCopyright() : String
     }
 }

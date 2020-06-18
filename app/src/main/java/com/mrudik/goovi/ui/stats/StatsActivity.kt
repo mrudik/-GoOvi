@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
+import com.mrudik.goovi.getThemeColor
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearAdapter
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,7 +77,21 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
     }
 
     override fun showGoalsDescriptionWithGretzkySpan(description: String) {
-        setGoalsDescriptionWayneGretzkyAsLink(SpannableString(description))
+        val spannableString = SpannableString(description)
+        setGoalsDescriptionWithSpan(
+            spannableString,
+            spannableString.length - 13,
+            spannableString.length
+        )
+    }
+
+    override fun showGoalsDescriptionWithOvechkinSpan(description: String) {
+        val spannableString = SpannableString(description)
+        setGoalsDescriptionWithSpan(
+            spannableString,
+            spannableString.length - 13,
+            spannableString.length
+        )
     }
 
     override fun showStatPerYear(statPerYearList: ArrayList<StatPerYearItem>) {
@@ -105,18 +120,16 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setGoalsDescriptionWayneGretzkyAsLink(spannableString: SpannableString) {
-        val spanStartIndex = spannableString.length - 13
-        val spanEndIndex = spannableString.length
+    private fun setGoalsDescriptionWithSpan(
+        spannableString: SpannableString,
+        startIndex: Int,
+        endIndex: Int) {
 
         // Clickable Span
         spannableString.setSpan(
             object: ClickableSpan() {
                 override fun onClick(widget: View) {
-                    // Open Wayne Gretzky Stat
-                    val intent = Intent(this@StatsActivity, StatsActivity::class.java)
-                    intent.putExtra(KEY_PLAYED_ID, Const.GRETZKY_PLAYER_ID)
-                    startActivity(intent)
+                    presenter.playerNameClickAction()
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -124,20 +137,30 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
                     ds.isUnderlineText = false
                 }
             },
-            spanStartIndex,
-            spanEndIndex,
+            startIndex,
+            endIndex,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         // Color Span
         spannableString.setSpan(
-            ForegroundColorSpan(getColor(R.color.colorPrimaryGretzky)),
-            spanStartIndex,
-            spanEndIndex,
+            ForegroundColorSpan(getThemeColor(R.attr.colorOppositeTheme)),
+            startIndex,
+            endIndex,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         textViewGoalsDescription.text = spannableString
         textViewGoalsDescription.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    override fun showGretzkyScreen() {
+        val intent = Intent(this@StatsActivity, StatsActivity::class.java)
+        intent.putExtra(KEY_PLAYED_ID, Const.GRETZKY_PLAYER_ID)
+        startActivity(intent)
+    }
+
+    override fun closeScreen() {
+        finish()
     }
 }

@@ -31,4 +31,16 @@ class StatsContent(private val context: Context) : StatsContract.Content {
     override fun getNetworkLoadingError(): String {
         return context.getString(R.string.network_loading_error)
     }
+
+    override fun getTheSameAsOvechkin(): String {
+        return context.getString(R.string.the_same_as_ovechkin)
+    }
+
+    override fun getTemplateGoalsLessThanOvechkin(): String {
+        return context.getString(R.string.template_goals_less_than_ovechkin)
+    }
+
+    override fun getCopyright(): String {
+        return context.getString(R.string.copyright)
+    }
 }

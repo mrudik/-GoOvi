@@ -9,6 +9,7 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <attr name="colorOppositeTheme" format="reference|color"/>
     <attr name="colorPrimaryTheme" format="reference|color"/>
     <attr name="photoPrimaryTheme" format="reference"/>
     <attr name="backgroundPrimaryTheme" format="reference"/>
