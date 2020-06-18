@@ -1,12 +1,12 @@
 package com.mrudik.goovi.dagger.module
 
 import android.content.Context
-import com.mrudik.goovi.api.ApiService
+import android.content.SharedPreferences
 import com.mrudik.goovi.db.dao.DBLeagueDao
 import com.mrudik.goovi.db.dao.DBPlayerDao
 import com.mrudik.goovi.db.dao.DBPlayerStatDao
-import com.mrudik.goovi.sync.repository.SyncStatRepository
 import com.mrudik.goovi.sync.SyncManager
+import com.mrudik.goovi.sync.SyncStatDBHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,24 +17,27 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object SyncModule {
+
     @Singleton
     @Provides
-    fun provideStatRemoteRepository(apiService: ApiService,
-                                    dbLeagueDao: DBLeagueDao,
-                                    dbPlayerDao: DBPlayerDao,
-                                    dbPlayerStatDao: DBPlayerStatDao) : SyncStatRepository {
+    fun provideSyncManager(
+        @ApplicationContext context: Context,
+        preferences: SharedPreferences) : SyncManager {
 
-        return SyncStatRepository(
-            apiService,
-            dbLeagueDao,
-            dbPlayerDao,
-            dbPlayerStatDao
-        )
+        return SyncManager(context, preferences)
     }
 
     @Singleton
     @Provides
-    fun provideSyncManager(@ApplicationContext context: Context) : SyncManager {
-        return SyncManager(context)
+    fun provideSyncStatDBHelper(
+        dbLeagueDao: DBLeagueDao,
+        dbPlayerDao: DBPlayerDao,
+        dbPlayerStatDao: DBPlayerStatDao) : SyncStatDBHelper {
+
+        return SyncStatDBHelper(
+            dbLeagueDao,
+            dbPlayerDao,
+            dbPlayerStatDao
+        )
     }
 }

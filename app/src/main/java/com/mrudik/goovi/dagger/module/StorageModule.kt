@@ -1,6 +1,7 @@
 package com.mrudik.goovi.dagger.module
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.db.Database
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-object DatabaseModule {
+object StorageModule {
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context) : Database {
@@ -43,5 +44,11 @@ object DatabaseModule {
     @Provides
     fun provideDBPlayerStatDao(database: Database) : DBPlayerStatDao {
         return database.dbPlayerStatDao
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context) : SharedPreferences {
+        return context.getSharedPreferences(Const.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
 }

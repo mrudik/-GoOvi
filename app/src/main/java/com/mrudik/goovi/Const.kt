@@ -24,6 +24,9 @@ open class Const {
 
         const val DATABASE_NAME = "Database"
         const val DATABASE_VERSION = 1
-        const val DB_NO_INT_VALUE = -1
+
+        const val SHARED_PREFERENCES_NAME = "Preferences"
+        const val SHARED_PREFERENCES_KEY_PLAYERS = "Players"
+        const val SHARED_PREFERENCES_KEY_LAST_SYNC_TIME = "LastSyncTime"
     }
 }

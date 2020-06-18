@@ -1,7 +1,7 @@
-package com.mrudik.goovi.sync.repository
+package com.mrudik.goovi.sync
 
 import com.mrudik.goovi.Const
-import com.mrudik.goovi.api.ApiService
+import com.mrudik.goovi.api.model.stats.FullStat
 import com.mrudik.goovi.api.model.stats.SplitStat
 import com.mrudik.goovi.db.dao.DBLeagueDao
 import com.mrudik.goovi.db.dao.DBPlayerDao
@@ -9,40 +9,28 @@ import com.mrudik.goovi.db.dao.DBPlayerStatDao
 import com.mrudik.goovi.db.entity.DBLeague
 import com.mrudik.goovi.db.entity.DBPlayer
 import com.mrudik.goovi.db.entity.DBPlayerStat
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 
-class SyncStatRepository(
-    val apiService: ApiService,
-    val dbLeagueDao: DBLeagueDao,
-    val dbPlayerDao: DBPlayerDao,
-    val dbPlayerStatDao: DBPlayerStatDao) {
+class SyncStatDBHelper(
+    private val dbLeagueDao: DBLeagueDao,
+    private val dbPlayerDao: DBPlayerDao,
+    private val dbPlayerStatDao: DBPlayerStatDao) {
 
-    private val compositeDisposable = CompositeDisposable()
+    var isSuccess = false
 
-    fun loadFullStat(playerId: Int) {
-        val disposable: Disposable = apiService.loadPlayerStats(playerId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe(
-                {
-                    val splitStatList = it.stats?.get(0)?.splitStat
-                    if (splitStatList != null) {
-                        val nhlStatList = getNHLStatOnly(splitStatList)
-                        val totalGoals = getTotalNHLGoals(nhlStatList)
+    fun parseAndInsertToDatabase(playerId: Int, fullStat: FullStat) : Boolean {
+        val splitStatList = fullStat.stats?.get(0)?.splitStat
+        if (splitStatList != null) {
+            val nhlStatList = getNHLStatOnly(splitStatList)
+            val totalGoals = getTotalNHLGoals(nhlStatList)
 
-                        insertPlayerToDatabase(playerId, totalGoals)
-                        insertLeagueToDatabase(it.copyright)
-                        insertStatToDatabase(playerId, nhlStatList)
-                    }
-                },
-                {
-                    compositeDisposable.dispose()
-                }
-            )
+            insertPlayerToDatabase(playerId, totalGoals)
+            insertLeagueToDatabase(fullStat.copyright)
+            insertStatToDatabase(playerId, nhlStatList)
 
-        compositeDisposable.add(disposable)
+            isSuccess = true
+        }
+
+        return isSuccess
     }
 
 
