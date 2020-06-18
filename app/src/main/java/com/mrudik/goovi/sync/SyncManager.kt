@@ -5,22 +5,17 @@ import androidx.work.*
 import com.mrudik.goovi.Const
 
 class SyncManager(private val context: Context) {
+
     fun sync() {
-        val loadOviStatWorkRequest = OneTimeWorkRequest.Builder(LoadStatWorker::class.java)
-            .setConstraints(getConstraints())
-            .setInputData(getInputData(Const.OVECHKIN_PLAYER_ID))
-            .build()
-
-        val loadGretzkyStatWorkRequest = OneTimeWorkRequest.Builder(LoadStatWorker::class.java)
-            .setConstraints(getConstraints())
-            .setInputData(getInputData(Const.GRETZKY_PLAYER_ID))
-            .build()
-
-        WorkManager
-            .getInstance(context)
-            .beginWith(loadOviStatWorkRequest)
-            .then(loadGretzkyStatWorkRequest)
-            .enqueue()
+        if (!isPlayerExists(Const.GRETZKY_PLAYER_ID)) {
+            WorkManager
+                .getInstance(context)
+                .beginWith(getOviStatWorkRequest())
+                .then(getGretzkyStatWorkRequest())
+                .enqueue()
+        } else {
+            WorkManager.getInstance(context).enqueue(getOviStatWorkRequest())
+        }
     }
 
     private fun getInputData(playerId: Int) : Data {
@@ -33,5 +28,24 @@ class SyncManager(private val context: Context) {
         return Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+    }
+
+    private fun getOviStatWorkRequest() : OneTimeWorkRequest {
+        return OneTimeWorkRequest.Builder(LoadStatWorker::class.java)
+            .setConstraints(getConstraints())
+            .setInputData(getInputData(Const.OVECHKIN_PLAYER_ID))
+            .build()
+    }
+
+    private fun getGretzkyStatWorkRequest() : OneTimeWorkRequest {
+        return OneTimeWorkRequest.Builder(LoadStatWorker::class.java)
+            .setConstraints(getConstraints())
+            .setInputData(getInputData(Const.GRETZKY_PLAYER_ID))
+            .build()
+    }
+
+    private fun isPlayerExists(playerId: Int) : Boolean {
+        return false
+        TODO("Store in SharedPreferences flag that tells that data exists or not")
     }
 }
