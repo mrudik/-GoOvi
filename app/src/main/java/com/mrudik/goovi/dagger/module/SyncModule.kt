@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class RepositoryModule {
+object SyncModule {
     @Singleton
     @Provides
     fun provideStatRemoteRepository(apiService: ApiService,

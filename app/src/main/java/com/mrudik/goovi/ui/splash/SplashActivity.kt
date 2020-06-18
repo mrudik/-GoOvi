@@ -1,14 +1,12 @@
-package com.mrudik.goovi.splash
+package com.mrudik.goovi.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.*
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
-import com.mrudik.goovi.sync.LoadStatWorker
-import com.mrudik.goovi.stats.StatsActivity
+import com.mrudik.goovi.ui.stats.StatsActivity
 import com.mrudik.goovi.sync.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

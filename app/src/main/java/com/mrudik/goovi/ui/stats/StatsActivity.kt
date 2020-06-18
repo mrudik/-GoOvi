@@ -1,8 +1,7 @@
-package com.mrudik.goovi.stats
+package com.mrudik.goovi.ui.stats
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -15,11 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.mrudik.goovi.App
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
-import com.mrudik.goovi.stats.adapter.StatPerYearAdapter
-import com.mrudik.goovi.stats.adapter.StatPerYearItem
+import com.mrudik.goovi.ui.stats.adapter.StatPerYearAdapter
+import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_stats.*
 import javax.inject.Inject

@@ -1,6 +1,6 @@
-package com.mrudik.goovi.stats
+package com.mrudik.goovi.ui.stats
 
-import com.mrudik.goovi.stats.adapter.StatPerYearItem
+import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 
 interface StatsContract {
     interface Presenter {

@@ -1,9 +1,9 @@
-package com.mrudik.goovi.stats
+package com.mrudik.goovi.ui.stats
 
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.api.ApiService
 import com.mrudik.goovi.api.model.stats.SplitStat
-import com.mrudik.goovi.stats.adapter.StatPerYearItem
+import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

@@ -1,8 +1,7 @@
-package com.mrudik.goovi.stats
+package com.mrudik.goovi.ui.stats
 
 import android.content.Context
 import com.mrudik.goovi.R
-import com.mrudik.goovi.stats.StatsContract
 
 class StatsContent(private val context: Context) : StatsContract.Content {
     override fun getAlexOvechkinTitle() : String {

@@ -1,4 +1,4 @@
-package com.mrudik.goovi.stats.adapter
+package com.mrudik.goovi.ui.stats.adapter
 
 import android.content.Context
 import android.graphics.Typeface

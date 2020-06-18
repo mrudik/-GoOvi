@@ -1,10 +1,10 @@
-package com.mrudik.goovi.stats.dagger
+package com.mrudik.goovi.ui.stats.dagger
 
 import android.content.Context
 import com.mrudik.goovi.api.ApiService
-import com.mrudik.goovi.stats.StatsContent
-import com.mrudik.goovi.stats.StatsContract
-import com.mrudik.goovi.stats.StatsPresenter
+import com.mrudik.goovi.ui.stats.StatsContent
+import com.mrudik.goovi.ui.stats.StatsContract
+import com.mrudik.goovi.ui.stats.StatsPresenter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

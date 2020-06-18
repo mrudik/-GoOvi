@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundPrimaryTheme"
     android:fillViewport="true"
-    tools:context=".stats.StatsActivity">
+    tools:context=".ui.stats.StatsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

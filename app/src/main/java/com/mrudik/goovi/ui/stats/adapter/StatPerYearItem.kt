@@ -1,4 +1,4 @@
-package com.mrudik.goovi.stats.adapter
+package com.mrudik.goovi.ui.stats.adapter
 
 open class StatPerYearItem {
     var season = "Season"
