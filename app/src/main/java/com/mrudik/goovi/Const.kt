@@ -20,7 +20,6 @@ open class Const {
         const val GRETZKY_PLAYER_ID = 8447400
         const val NHL_LEAGUE_ID = 133
         const val NHL_LEAGUE_NAME = "NHL"
-        const val GRETZKY_TOTAL_GOALS = 894
 
         const val DATABASE_NAME = "Database"
         const val DATABASE_VERSION = 1

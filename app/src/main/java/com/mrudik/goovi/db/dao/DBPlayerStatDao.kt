@@ -1,5 +1,6 @@
 package com.mrudik.goovi.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -16,5 +17,5 @@ interface DBPlayerStatDao {
     fun deleteByPlayerId(playerId: Int)
 
     @Query("SELECT * FROM DBPlayerStat WHERE playerId = :playerId")
-    fun getStatByPlayerId(playerId: Int): Flowable<List<DBPlayerStat>?>?
+    fun getStatByPlayerId(playerId: Int): Flowable<List<DBPlayerStat>>
 }

@@ -7,7 +7,6 @@ interface StatsContract {
         fun start(playerId: Int)
         fun takeView(view: View)
         fun clearView()
-        fun loadFullStat()
     }
 
     interface View {

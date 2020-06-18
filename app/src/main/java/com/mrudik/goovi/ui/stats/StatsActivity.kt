@@ -47,6 +47,11 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
         presenter.start(playerId)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.clearView()
+    }
+
     private fun setProperTheme(playerId: Int) {
         when (playerId) {
             Const.OVECHKIN_PLAYER_ID -> setTheme(R.style.OviTheme)

@@ -1,16 +1,21 @@
 package com.mrudik.goovi.ui.stats
 
 import com.mrudik.goovi.Const
-import com.mrudik.goovi.api.ApiService
-import com.mrudik.goovi.api.model.stats.SplitStat
+import com.mrudik.goovi.db.dao.DBLeagueDao
+import com.mrudik.goovi.db.dao.DBPlayerDao
+import com.mrudik.goovi.db.dao.DBPlayerStatDao
+import com.mrudik.goovi.db.entity.DBLeague
+import com.mrudik.goovi.db.entity.DBPlayer
+import com.mrudik.goovi.db.entity.DBPlayerStat
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class StatsPresenter(
-    private val apiService: ApiService,
+    private val dbPlayerDao: DBPlayerDao,
+    private val dbPlayerStatDao: DBPlayerStatDao,
+    private val dbLeagueDao: DBLeagueDao,
     private val content: StatsContract.Content) : StatsContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
@@ -30,7 +35,9 @@ class StatsPresenter(
         this.playerId = playerId
 
         setTitle()
-        loadFullStat()
+        loadTotalGoals()
+        loadYearByYearStat()
+        loadCopyright()
     }
 
     private fun setTitle() {
@@ -40,69 +47,94 @@ class StatsPresenter(
         }
     }
 
-    override fun loadFullStat() {
-        val disposable: Disposable = apiService.loadPlayerStats(playerId)
+    private fun loadTotalGoals() {
+        val disposable = dbPlayerDao.getPlayers()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    val splitStatList = it.stats?.get(0)?.splitStat
-                    if (splitStatList != null) {
-                        val nhlStatList = getNHLStatOnly(splitStatList)
-                        val totalGoals = getTotalNHLGoals(nhlStatList)
-                        view?.showTotalGoals(totalGoals)
-
-                        showGoalsDescription(totalGoals)
-                        showYearByYearStat(nhlStatList)
-                    }
-                    // Copyright
-                    view?.showCopyright(it.copyright ?: "")
+                    showTotalGoals(it)
+                    compareTotalGoalsToOpponent(it)
                 },
                 {
-                    view?.showError(content.getNetworkLoadingError())
+                    TODO("Show error")
                 }
             )
 
         compositeDisposable.add(disposable)
     }
 
-    private fun getNHLStatOnly(splitStatList: ArrayList<SplitStat>) : ArrayList<SplitStat> {
-        val nhlStatList = ArrayList<SplitStat>()
-        for (stat in splitStatList) {
-            if (stat.league?.leagueId == Const.NHL_LEAGUE_ID) {
-                nhlStatList.add(stat)
+    private fun loadYearByYearStat() {
+        val disposable = dbPlayerStatDao.getStatByPlayerId(playerId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    showYearByYearStat(it)
+                },
+                {
+                    TODO("Show error")
+                }
+            )
+
+        compositeDisposable.add(disposable)
+    }
+
+    private fun loadCopyright() {
+        val disposable = dbLeagueDao.getLeague(Const.NHL_LEAGUE_ID)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    showCopyright(it)
+                },
+                {
+                    TODO("Show error")
+                }
+            )
+
+        compositeDisposable.add(disposable)
+    }
+
+    private fun showTotalGoals(dbPlayersList: List<DBPlayer>) {
+        for (dbPlayer in dbPlayersList) {
+            if (dbPlayer.playerId == playerId.toLong()) {
+                view?.showTotalGoals(dbPlayer.totalGoals)
+                break
             }
         }
-        return nhlStatList
     }
 
-    private fun getTotalNHLGoals(nhlStatList: ArrayList<SplitStat>) : Int {
-        var totalGoals = 0
-        for (stat in nhlStatList) {
-            totalGoals += stat.playerStat?.goals!!
+    private fun compareTotalGoalsToOpponent(dbPlayersList: List<DBPlayer>) {
+        var currentPlayerGoals = 0
+        var opponentPlayerGoals = 0
+
+        for (dbPlayer in dbPlayersList) {
+            if (dbPlayer.playerId == playerId.toLong()) {
+                currentPlayerGoals = dbPlayer.totalGoals
+            } else {
+                opponentPlayerGoals = dbPlayer.totalGoals
+            }
         }
-        return totalGoals
-    }
 
-    private fun showGoalsDescription(totalGoals: Int) {
         if (playerId == Const.OVECHKIN_PLAYER_ID) {
-            compareToGretzky(totalGoals)
-        } else if (playerId == Const.GRETZKY_PLAYER_ID) {
-            compareToOvechkin(totalGoals)
+            compareToGretzky(currentPlayerGoals, opponentPlayerGoals)
+        } else {
+            compareToOvechkin(currentPlayerGoals, opponentPlayerGoals)
         }
     }
 
-    private fun compareToGretzky(totalGoals: Int) {
+    private fun compareToGretzky(oviTotalGoals: Int, gretzkyTotalGoals: Int) {
         when {
-            Const.GRETZKY_TOTAL_GOALS > totalGoals -> {
+            gretzkyTotalGoals > oviTotalGoals -> {
                 view?.showGoalsDescriptionWithGretzkySpan(
                     String.format(
                         content.getTemplateGoalsToGretzky(),
-                        Const.GRETZKY_TOTAL_GOALS - totalGoals
+                        gretzkyTotalGoals - oviTotalGoals
                     )
                 )
             }
-            Const.GRETZKY_TOTAL_GOALS == totalGoals -> {
+            gretzkyTotalGoals == oviTotalGoals -> {
                 view?.showGoalsDescriptionWithGretzkySpan(
                     content.getTheSameAsGretzky()
                 )
@@ -111,36 +143,38 @@ class StatsPresenter(
                 view?.showGoalsDescriptionWithGretzkySpan(
                     String.format(
                         content.getTemplateGoalsMoreThanGretzky(),
-                        totalGoals - Const.GRETZKY_TOTAL_GOALS
+                        oviTotalGoals - gretzkyTotalGoals
                     )
                 )
             }
         }
     }
 
-    private fun compareToOvechkin(totalGoals: Int) {
-        view?.showGoalsDescription(content.getNHLAllTimeLeadingGoalScorer())
-        // TODO: To be implemented
+    private fun compareToOvechkin(gretzkyTotalGoals: Int, oviTotalGoals: Int) {
+        when {
+            gretzkyTotalGoals > oviTotalGoals -> {
+                view?.showGoalsDescription(content.getNHLAllTimeLeadingGoalScorer())
+            }
+            gretzkyTotalGoals == oviTotalGoals -> {
+                TODO("Equal with Ovi")
+            }
+            else -> {
+                TODO("Less than Ovi")
+            }
+        }
     }
 
-    private fun showYearByYearStat(nhlStatList: ArrayList<SplitStat>) {
+    private fun showYearByYearStat(dbPlayerStatList: List<DBPlayerStat>) {
         val statsPerYearList = ArrayList<StatPerYearItem>()
 
-        // Header Item
+        // Header
         statsPerYearList.add(StatPerYearItem())
 
-        // Stat Items
-        for (i in nhlStatList.size - 1 downTo 0 step 1) {
-            val splitStat = nhlStatList[i]
-            val item = StatPerYearItem()
-            item.season = getSlashedSeasonString(splitStat.season)
-            splitStat.playerStat?.let {
-                item.gamesPlayed = it.games.toString()
-                item.goals = it.goals.toString()
-                item.assists = it.assists.toString()
-                item.points = it.points.toString()
-            }
-            statsPerYearList.add(item)
+        // Items
+        for (dbPlayerStat in dbPlayerStatList) {
+            statsPerYearList.add(
+                StatPerYearItem(dbPlayerStat)
+            )
         }
 
         if (statsPerYearList.size > 1) {
@@ -150,11 +184,7 @@ class StatsPresenter(
         }
     }
 
-    private fun getSlashedSeasonString(season: String?) : String {
-        return season?.let {
-            val firstPart = season.substring(0, 4)
-            val secondPart = season.substring(4, 8)
-            "$firstPart/$secondPart"
-        } ?: ""
+    private fun showCopyright(dbLeague: DBLeague) {
+        view?.showCopyright(dbLeague.copyright ?: "")
     }
 }
