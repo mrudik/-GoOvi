@@ -4,18 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
-import com.mrudik.goovi.service.LoadOviStatWorker
+import com.mrudik.goovi.sync.LoadStatWorker
 import com.mrudik.goovi.stats.StatsActivity
+import com.mrudik.goovi.sync.SyncManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
     lateinit var handler: Handler
     lateinit var runnable: Runnable
+
+    @Inject
+    lateinit var syncManager: SyncManager
 
     companion object {
         const val DELAY = 1000 * 1L
@@ -25,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        startSync()
+        syncManager.sync()
         showStatsScreen()
     }
 
@@ -45,17 +49,5 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }
         handler.postDelayed(runnable, DELAY)
-    }
-
-    private fun startSync() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val loadOviStatWorkRequest = OneTimeWorkRequest.Builder(LoadOviStatWorker::class.java)
-            .setConstraints(constraints)
-            .build()
-
-        WorkManager.getInstance(this).enqueue(loadOviStatWorkRequest)
     }
 }
