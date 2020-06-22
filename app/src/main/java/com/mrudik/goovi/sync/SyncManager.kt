@@ -50,9 +50,9 @@ class SyncManager(
     }
 
     fun stopSync() {
-        WorkManager.getInstance(context).cancelAllWork()
-        this.lifecycleOwner = null
-        this.syncStatus = null
+        workManager.cancelAllWork()
+        lifecycleOwner = null
+        syncStatus = null
     }
 
     private fun getInputData(playerId: Int) : Data {
