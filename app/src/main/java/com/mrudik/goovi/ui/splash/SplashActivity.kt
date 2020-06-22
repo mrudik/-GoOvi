@@ -61,12 +61,15 @@ class SplashActivity : AppCompatActivity(), SyncManager.SyncStatus {
     private fun showStatsScreen() {
         handler = Handler()
         runnable = Runnable {
-            val intent = Intent(this, StatsActivity::class.java)
-            intent.putExtra(StatsActivity.KEY_PLAYED_ID, Const.OVECHKIN_PLAYER_ID)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
+            if (!isFinishing) {
+                val intent = Intent(this, StatsActivity::class.java)
+                intent.putExtra(StatsActivity.KEY_PLAYED_ID, Const.OVECHKIN_PLAYER_ID)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
 
-            finish()
+                finish()
+            }
+
         }
         handler!!.postDelayed(runnable!!, DELAY)
     }
