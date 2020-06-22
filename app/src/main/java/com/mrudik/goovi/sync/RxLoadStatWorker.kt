@@ -24,7 +24,7 @@ class RxLoadStatWorker @WorkerInject constructor (
     override fun createWork(): Single<Result> {
         val playerId = inputData.getInt(KEY_PLAYER_ID, 0)
 
-        return apiService.loadPlayerStatsSingle(playerId)
+        return apiService.loadPlayerStat(playerId)
             .map {
                 val isSuccess = dbHelper.parseAndInsertToDatabase(playerId, it)
                 if (isSuccess) {
