@@ -6,7 +6,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
 import com.mrudik.goovi.getThemeColor
+import com.mrudik.goovi.ui.helper.SingleClickSpan
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearAdapter
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,8 +127,8 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
 
         // Clickable Span
         spannableString.setSpan(
-            object: ClickableSpan() {
-                override fun onClick(widget: View) {
+            object: SingleClickSpan() {
+                override fun singleClick(widget: View) {
                     presenter.playerNameClickAction()
                 }
 

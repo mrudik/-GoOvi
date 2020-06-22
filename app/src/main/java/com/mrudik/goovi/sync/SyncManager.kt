@@ -2,23 +2,57 @@ package com.mrudik.goovi.sync
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mrudik.goovi.Const
+import java.util.*
 
 class SyncManager(
     private val context: Context,
     private val preferences: SharedPreferences) {
 
-    fun sync() {
+    private lateinit var workManager: WorkManager
+    private var lifecycleOwner : LifecycleOwner? = null
+    private var syncStatus: SyncStatus? = null
+
+    interface SyncStatus {
+        fun syncSucceeded()
+        fun syncFailed()
+    }
+
+    fun sync(lifecycleOwner : LifecycleOwner, syncStatus: SyncStatus) {
+        this.workManager = WorkManager.getInstance(context)
+        this.lifecycleOwner = lifecycleOwner
+        this.syncStatus = syncStatus
+
+        val oviStatWorkRequest = getOviStatWorkRequest()
+        var workIdToObserve: UUID = oviStatWorkRequest.id
+
         if (!isPlayerExists(Const.GRETZKY_PLAYER_ID)) {
-            WorkManager
-                .getInstance(context)
-                .beginWith(getOviStatWorkRequest())
-                .then(getGretzkyStatWorkRequest())
+            val gretzkyStatWorkRequest = getGretzkyStatWorkRequest()
+            workIdToObserve = gretzkyStatWorkRequest.id
+
+            workManager
+                .beginWith(oviStatWorkRequest)
+                .then(gretzkyStatWorkRequest)
                 .enqueue()
+
         } else {
-            WorkManager.getInstance(context).enqueue(getOviStatWorkRequest())
+            workManager.enqueue(oviStatWorkRequest)
         }
+
+        observeWorkInfo(
+            lifecycleOwner,
+            workIdToObserve,
+            syncStatus
+        )
+    }
+
+    fun stopSync() {
+        WorkManager.getInstance(context).cancelAllWork()
+        this.lifecycleOwner = null
+        this.syncStatus = null
     }
 
     private fun getInputData(playerId: Int) : Data {
@@ -50,5 +84,20 @@ class SyncManager(
     private fun isPlayerExists(playerId: Int) : Boolean {
         val usersSet = preferences.getStringSet(Const.SHARED_PREFERENCES_KEY_PLAYERS, null)
         return usersSet?.contains(playerId.toString()) ?: false
+    }
+
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    private fun observeWorkInfo(
+        lifecycleOwner : LifecycleOwner,
+        workRequestId: UUID,
+        syncStatus: SyncStatus) {
+
+        workManager.getWorkInfoByIdLiveData(workRequestId)
+            .observe(lifecycleOwner, Observer {
+                when (it.state) {
+                    WorkInfo.State.SUCCEEDED -> syncStatus.syncSucceeded()
+                    WorkInfo.State.FAILED -> syncStatus.syncFailed()
+                }
+            })
     }
 }
