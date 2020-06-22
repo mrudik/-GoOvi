@@ -15,7 +15,7 @@ class SyncStatDBHelper(
     private val dbPlayerDao: DBPlayerDao,
     private val dbPlayerStatDao: DBPlayerStatDao) {
 
-    var isSuccess = false
+    private var isSuccess = false
 
     fun parseAndInsertToDatabase(playerId: Int, fullStat: FullStat) : Boolean {
         val splitStatList = fullStat.stats?.get(0)?.splitStat
@@ -32,7 +32,6 @@ class SyncStatDBHelper(
 
         return isSuccess
     }
-
 
     private fun getNHLStatOnly(splitStatList: ArrayList<SplitStat>) : ArrayList<SplitStat> {
         val nhlStatList = ArrayList<SplitStat>()
