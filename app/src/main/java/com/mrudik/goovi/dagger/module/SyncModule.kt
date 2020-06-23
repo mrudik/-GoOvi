@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import com.mrudik.goovi.db.dao.DBLeagueDao
 import com.mrudik.goovi.db.dao.DBPlayerDao
 import com.mrudik.goovi.db.dao.DBPlayerStatDao
+import com.mrudik.goovi.helper.scheduler.BaseSchedulerProvider
+import com.mrudik.goovi.helper.scheduler.SchedulerProvider
 import com.mrudik.goovi.sync.SyncManager
 import com.mrudik.goovi.sync.SyncStatDBHelper
 import dagger.Module
@@ -39,5 +41,11 @@ object SyncModule {
             dbPlayerDao,
             dbPlayerStatDao
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideSchedulerProvider() : BaseSchedulerProvider {
+        return SchedulerProvider()
     }
 }

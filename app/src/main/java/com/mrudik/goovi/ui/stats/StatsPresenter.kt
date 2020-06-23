@@ -7,16 +7,16 @@ import com.mrudik.goovi.db.dao.DBPlayerStatDao
 import com.mrudik.goovi.db.entity.DBLeague
 import com.mrudik.goovi.db.entity.DBPlayer
 import com.mrudik.goovi.db.entity.DBPlayerStat
+import com.mrudik.goovi.helper.scheduler.BaseSchedulerProvider
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 class StatsPresenter(
     private val dbPlayerDao: DBPlayerDao,
     private val dbPlayerStatDao: DBPlayerStatDao,
     private val dbLeagueDao: DBLeagueDao,
-    private val content: StatsContract.Content) : StatsContract.Presenter {
+    private val content: StatsContract.Content,
+    private val schedulerProvider: BaseSchedulerProvider) : StatsContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
     private var view: StatsContract.View? = null
@@ -56,8 +56,8 @@ class StatsPresenter(
 
     private fun loadTotalGoals() {
         val disposable = dbPlayerDao.getPlayers()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
             .subscribe(
                 {
                     showTotalGoals(it)
@@ -73,8 +73,8 @@ class StatsPresenter(
 
     private fun loadYearByYearStat() {
         val disposable = dbPlayerStatDao.getStatByPlayerId(playerId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
             .subscribe(
                 {
                     showYearByYearStat(it)
@@ -89,8 +89,8 @@ class StatsPresenter(
 
     private fun loadCopyright() {
         val disposable = dbLeagueDao.getLeague(Const.NHL_LEAGUE_ID)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
             .subscribe(
                 {
                     showCopyright(it)
