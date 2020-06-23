@@ -185,4 +185,62 @@ class StatsPresenterTest {
         presenter.start(Const.GRETZKY_PLAYER_ID)
         Mockito.verify(mockView).showGoalsDescriptionWithOvechkinSpan("$diff $msg" )
     }
+
+    @Test
+    fun start_not_calls_showCopyright_when_view_is_null() {
+        presenter.clearView()
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).showCopyright(Mockito.anyString())
+    }
+
+    @Test
+    fun start_not_calls_setScreenTitle_when_view_is_null() {
+        presenter.clearView()
+        presenter.start(Const.GRETZKY_PLAYER_ID)
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).setScreenTitle(Mockito.anyString())
+    }
+
+    @Test
+    fun playerNameClickAction_calls_showGretzkyScreen_when_playerId_is_Ovi() {
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView).showGretzkyScreen()
+    }
+
+    @Test
+    fun playerNameClickAction_calls_closeScreen_when_playerId_is_Gretzky() {
+        presenter.start(Const.GRETZKY_PLAYER_ID)
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView).closeScreen()
+    }
+
+    @Test
+    fun playerNameClickAction_not_calls_closeScreen_when_playerId_is_unknown() {
+        presenter.start(0)
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).closeScreen()
+    }
+
+    @Test
+    fun playerNameClickAction_not_calls_showGretzkyScreen_when_playerId_is_unknown() {
+        presenter.start(0)
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).showGretzkyScreen()
+    }
+
+    @Test
+    fun playerNameClickAction_not_calls_showGretzkyScreen_when_playerId_is_Ovi_view_is_null() {
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        presenter.clearView()
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).showGretzkyScreen()
+    }
+
+    @Test
+    fun playerNameClickAction_not_calls_closeScreen_when_playerId_is_Gretzky_view_is_null() {
+        presenter.start(Const.GRETZKY_PLAYER_ID)
+        presenter.clearView()
+        presenter.playerNameClickAction()
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).closeScreen()
+    }
 }
