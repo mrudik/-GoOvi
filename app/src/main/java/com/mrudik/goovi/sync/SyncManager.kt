@@ -6,11 +6,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.*
 import com.mrudik.goovi.Const
+import com.mrudik.goovi.helper.Helper
 import java.util.*
 
 class SyncManager(
     private val context: Context,
-    private val preferences: SharedPreferences) {
+    private val preferences: SharedPreferences,
+    private val helper: Helper) {
 
     private lateinit var workManager: WorkManager
     private var lifecycleOwner : LifecycleOwner? = null
@@ -26,6 +28,20 @@ class SyncManager(
         this.lifecycleOwner = lifecycleOwner
         this.syncStatus = syncStatus
 
+        if (helper.isNetworkConnected()) {
+            enqueue()
+        } else {
+            callDefaultSyncStatus()
+        }
+    }
+
+    fun stopSync() {
+        workManager.cancelAllWork()
+        lifecycleOwner = null
+        syncStatus = null
+    }
+
+    private fun enqueue() {
         val oviStatWorkRequest = getOviStatWorkRequest()
         var workIdToObserve: UUID = oviStatWorkRequest.id
 
@@ -43,16 +59,18 @@ class SyncManager(
         }
 
         observeWorkInfo(
-            lifecycleOwner,
+            lifecycleOwner!!,
             workIdToObserve,
-            syncStatus
+            syncStatus!!
         )
     }
 
-    fun stopSync() {
-        workManager.cancelAllWork()
-        lifecycleOwner = null
-        syncStatus = null
+    private fun callDefaultSyncStatus() {
+        if (isPlayerExists(Const.OVECHKIN_PLAYER_ID) && isPlayerExists(Const.GRETZKY_PLAYER_ID)) {
+            syncStatus?.syncSucceeded()
+        } else {
+            syncStatus?.syncFailed()
+        }
     }
 
     private fun getInputData(playerId: Int) : Data {

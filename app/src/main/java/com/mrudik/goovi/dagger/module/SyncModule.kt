@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.mrudik.goovi.db.dao.DBLeagueDao
 import com.mrudik.goovi.db.dao.DBPlayerDao
 import com.mrudik.goovi.db.dao.DBPlayerStatDao
+import com.mrudik.goovi.helper.Helper
 import com.mrudik.goovi.sync.SyncManager
 import com.mrudik.goovi.sync.SyncStatDBHelper
 import dagger.Module
@@ -22,9 +23,10 @@ object SyncModule {
     @Provides
     fun provideSyncManager(
         @ApplicationContext context: Context,
-        preferences: SharedPreferences) : SyncManager {
+        preferences: SharedPreferences,
+        helper: Helper) : SyncManager {
 
-        return SyncManager(context, preferences)
+        return SyncManager(context, preferences, helper)
     }
 
     @Singleton
