@@ -7,5 +7,4 @@ import androidx.room.PrimaryKey
 class DBLeague(
     @PrimaryKey var leagueId: Long,
     var leagueName: String,
-    var copyright: String?) {
-}
+    var copyright: String?)
