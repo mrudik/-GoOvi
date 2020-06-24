@@ -6,9 +6,12 @@ import com.mrudik.goovi.db.dao.DBPlayerDao
 import com.mrudik.goovi.db.dao.DBPlayerStatDao
 import com.mrudik.goovi.db.entity.DBLeague
 import com.mrudik.goovi.db.entity.DBPlayer
+import com.mrudik.goovi.db.entity.DBPlayerStat
+import com.mrudik.goovi.helper.ObjectCreator
 import com.mrudik.goovi.helper.scheduler.TrampolineSchedulerProvider
 import com.mrudik.goovi.ui.stats.StatsContract
 import com.mrudik.goovi.ui.stats.StatsPresenter
+import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
@@ -30,10 +33,13 @@ class StatsPresenterTest {
     private lateinit var mockContent: StatsContract.Content
     @Mock
     private lateinit var mockView: StatsContract.View
+    @Mock
+    private lateinit var mockObjectCreator: ObjectCreator
 
     private lateinit var dbPlayerOvi: DBPlayer
     private lateinit var dbPlayerGretzky: DBPlayer
     private lateinit var dbPlayersList: ArrayList<DBPlayer>
+    private lateinit var dbPlayerStatList: ArrayList<DBPlayerStat>
 
     private lateinit var dbLeague: DBLeague
 
@@ -47,7 +53,10 @@ class StatsPresenterTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = StatsPresenter(mockDbPlayerDao, mockDbPlayerStatDao, mockDbLeagueDao, mockContent, schedulerProvider)
+        presenter = StatsPresenter(
+            mockDbPlayerDao, mockDbPlayerStatDao, mockDbLeagueDao,
+            mockContent, schedulerProvider, mockObjectCreator
+        )
         presenter.takeView(mockView)
 
         // Entity
@@ -57,9 +66,14 @@ class StatsPresenterTest {
 
         dbLeague = DBLeague(Const.NHL_LEAGUE_ID.toLong(), Const.NHL_LEAGUE_NAME, DB_COPYRIGHT)
 
+        dbPlayerStatList = arrayListOf(
+            DBPlayerStat(Const.OVECHKIN_PLAYER_ID),
+            DBPlayerStat(Const.OVECHKIN_PLAYER_ID)
+        )
+
         // Query
         Mockito.`when`(mockDbPlayerDao.getPlayers()).thenReturn(Flowable.fromArray(dbPlayersList))
-        Mockito.`when`(mockDbPlayerStatDao.getStatByPlayerId(Mockito.anyInt())).thenReturn(Flowable.empty())
+        Mockito.`when`(mockDbPlayerStatDao.getStatByPlayerId(Mockito.anyInt())).thenReturn(Flowable.fromArray(dbPlayerStatList))
         Mockito.`when`(mockDbLeagueDao.getLeague(Mockito.anyInt())).thenReturn(Flowable.fromArray(dbLeague))
     }
 
@@ -242,5 +256,40 @@ class StatsPresenterTest {
         presenter.clearView()
         presenter.playerNameClickAction()
         Mockito.verify(mockView, VerificationModeFactory.times(0)).closeScreen()
+    }
+
+    @Test
+    fun start_calls_showStatPerYear_when_dbPlayerStat_is_present() {
+        val statPerYearList = ArrayList<StatPerYearItem>()
+
+        Mockito.`when`(mockObjectCreator.createStatPerYearItemArrayList()).thenReturn(statPerYearList)
+
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        Mockito.verify(mockView).showStatPerYear(statPerYearList)
+    }
+
+    @Test
+    fun start_calls_showStatPerYearNotAvailableError_when_dbPlayerStat_has_only_header_stat() {
+        dbPlayerStatList.clear()
+
+        val statPerYearList = ArrayList<StatPerYearItem>()
+
+        Mockito.`when`(mockObjectCreator.createStatPerYearItemArrayList()).thenReturn(statPerYearList)
+
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        Mockito.verify(mockView).showStatPerYearNotAvailableError()
+    }
+
+    @Test
+    fun start_not_calls_showStatPerYearNotAvailableError_when_dbPlayerStat_has_only_header_stat_view_is_null() {
+        dbPlayerStatList.clear()
+
+        val statPerYearList = ArrayList<StatPerYearItem>()
+
+        Mockito.`when`(mockObjectCreator.createStatPerYearItemArrayList()).thenReturn(statPerYearList)
+
+        presenter.clearView()
+        presenter.start(Const.OVECHKIN_PLAYER_ID)
+        Mockito.verify(mockView, VerificationModeFactory.times(0)).showStatPerYearNotAvailableError()
     }
 }
