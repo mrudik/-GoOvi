@@ -7,8 +7,8 @@ import com.mrudik.goovi.db.dao.DBPlayerStatDao
 import com.mrudik.goovi.db.entity.DBLeague
 import com.mrudik.goovi.db.entity.DBPlayer
 import com.mrudik.goovi.db.entity.DBPlayerStat
+import com.mrudik.goovi.helper.ObjectCreator
 import com.mrudik.goovi.helper.scheduler.BaseSchedulerProvider
-import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import io.reactivex.disposables.CompositeDisposable
 
 class StatsPresenter(
@@ -16,7 +16,8 @@ class StatsPresenter(
     private val dbPlayerStatDao: DBPlayerStatDao,
     private val dbLeagueDao: DBLeagueDao,
     private val content: StatsContract.Content,
-    private val schedulerProvider: BaseSchedulerProvider) : StatsContract.Presenter {
+    private val schedulerProvider: BaseSchedulerProvider,
+    private val objectCreator: ObjectCreator) : StatsContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
     private var view: StatsContract.View? = null
@@ -179,15 +180,15 @@ class StatsPresenter(
     }
 
     private fun showYearByYearStat(dbPlayerStatList: List<DBPlayerStat>) {
-        val statsPerYearList = ArrayList<StatPerYearItem>()
+        val statsPerYearList = objectCreator.createStatPerYearItemArrayList()
 
         // Header
-        statsPerYearList.add(StatPerYearItem())
+        statsPerYearList.add(objectCreator.createStatPerYearItem())
 
         // Items
         for (dbPlayerStat in dbPlayerStatList) {
             statsPerYearList.add(
-                StatPerYearItem(dbPlayerStat)
+                objectCreator.createStatPerYearItem(dbPlayerStat)
             )
         }
 
