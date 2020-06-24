@@ -39,6 +39,7 @@ class StatsPresenterTest {
     private lateinit var dbPlayerOvi: DBPlayer
     private lateinit var dbPlayerGretzky: DBPlayer
     private lateinit var dbPlayersList: ArrayList<DBPlayer>
+
     private lateinit var dbPlayerStatList: ArrayList<DBPlayerStat>
 
     private lateinit var dbLeague: DBLeague
