@@ -5,6 +5,8 @@ import com.mrudik.goovi.api.ApiService
 import com.mrudik.goovi.db.dao.DBLeagueDao
 import com.mrudik.goovi.db.dao.DBPlayerDao
 import com.mrudik.goovi.db.dao.DBPlayerStatDao
+import com.mrudik.goovi.helper.ObjectCreator
+import com.mrudik.goovi.helper.scheduler.BaseSchedulerProvider
 import com.mrudik.goovi.ui.stats.StatsContent
 import com.mrudik.goovi.ui.stats.StatsContract
 import com.mrudik.goovi.ui.stats.StatsPresenter
@@ -31,8 +33,13 @@ object StatsModule {
         dbPlayerDao: DBPlayerDao,
         dbPlayerStatDao: DBPlayerStatDao,
         dbLeagueDao: DBLeagueDao,
-        content: StatsContract.Content) : StatsContract.Presenter {
+        content: StatsContract.Content,
+        schedulerProvider: BaseSchedulerProvider,
+        objectCreator: ObjectCreator) : StatsContract.Presenter {
 
-        return StatsPresenter(dbPlayerDao, dbPlayerStatDao, dbLeagueDao, content)
+        return StatsPresenter(
+            dbPlayerDao, dbPlayerStatDao, dbLeagueDao,
+            content, schedulerProvider, objectCreator
+        )
     }
 }

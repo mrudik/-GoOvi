@@ -2,6 +2,7 @@ package com.mrudik.goovi.dagger.module
 
 import android.content.Context
 import com.mrudik.goovi.helper.Helper
+import com.mrudik.goovi.helper.ObjectCreator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +17,11 @@ object AppModule {
     @Provides
     fun provideHelper(@ApplicationContext context: Context) : Helper {
         return Helper(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideObjectCreator() : ObjectCreator {
+        return ObjectCreator()
     }
 }
