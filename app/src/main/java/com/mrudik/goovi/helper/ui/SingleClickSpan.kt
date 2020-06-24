@@ -1,4 +1,4 @@
-package com.mrudik.goovi.ui.helper
+package com.mrudik.goovi.helper.ui
 
 import android.os.SystemClock
 import android.text.style.ClickableSpan

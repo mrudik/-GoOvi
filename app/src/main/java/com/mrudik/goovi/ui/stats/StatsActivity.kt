@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
 import com.mrudik.goovi.getThemeColor
-import com.mrudik.goovi.ui.helper.SingleClickSpan
+import com.mrudik.goovi.helper.ui.SingleClickSpan
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearAdapter
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import dagger.hilt.android.AndroidEntryPoint
