@@ -3,6 +3,7 @@ package com.mrudik.goovi.dagger.module
 import android.content.Context
 import com.mrudik.goovi.helper.Helper
 import com.mrudik.goovi.helper.ObjectCreator
+import com.mrudik.goovi.helper.ui.Screenshot
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +24,11 @@ object AppModule {
     @Provides
     fun provideObjectCreator() : ObjectCreator {
         return ObjectCreator()
+    }
+
+    @Singleton
+    @Provides
+    fun provideScreenshot(@ApplicationContext context: Context) : Screenshot {
+        return Screenshot(context)
     }
 }
