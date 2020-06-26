@@ -9,6 +9,8 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -30,7 +32,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class StatsActivity : AppCompatActivity(), StatsContract.View {
     companion object {
-        const val KEY_PLAYED_ID = "playedIdKey"
+        const val KEY_PLAYER_ID = "playerIdKey"
         const val REQUEST_PERMISSION_STORAGE = 1000
     }
 
@@ -40,25 +42,27 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
     lateinit var screenshot: Screenshot
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val playerId = intent.getIntExtra(KEY_PLAYED_ID, Const.OVECHKIN_PLAYER_ID)
+        val playerId = intent.getIntExtra(KEY_PLAYER_ID, Const.OVECHKIN_PLAYER_ID)
         setProperTheme(playerId)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stats)
 
-        if (playerId == Const.GRETZKY_PLAYER_ID) {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
-        }
-
-        imageViewPhoto.setOnClickListener {
-            if (isStoragePermissionGranted()) {
-                takeScreenshot()
-            }
-        }
+        testScreen()
 
         presenter.takeView(this)
         presenter.start(playerId)
+    }
+
+    private fun testScreen() {
+        // TODO: Delete this
+        val metrics = resources.displayMetrics
+        Log.d("StatsActivityScreen", "width: " + metrics.widthPixels / metrics.density)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_stats_activity, menu)
+        return true
     }
 
     override fun onDestroy() {
@@ -116,6 +120,11 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
         }
     }
 
+    override fun showBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
     override fun setScreenTitle(title: String) {
         setTitle(title)
     }
@@ -170,10 +179,19 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            android.R.id.home -> onBackPressed()
+        return when(item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.stats_menu_action_share -> {
+                if (isStoragePermissionGranted()) {
+                    takeScreenshot()
+                }
+                true
+            }
+            else -> super.onContextItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setGoalsDescriptionWithSpan(
@@ -212,7 +230,7 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
 
     override fun showGretzkyScreen() {
         val intent = Intent(this@StatsActivity, StatsActivity::class.java)
-        intent.putExtra(KEY_PLAYED_ID, Const.GRETZKY_PLAYER_ID)
+        intent.putExtra(KEY_PLAYER_ID, Const.GRETZKY_PLAYER_ID)
         startActivity(intent)
     }
 

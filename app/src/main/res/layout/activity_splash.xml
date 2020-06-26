@@ -8,7 +8,7 @@
     android:paddingEnd="64dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.splash.SplashActivity"
-    android:background="@drawable/background_ovi">
+    android:background="@drawable/background_layer_ovi">
 
     <ImageView
         android:layout_width="wrap_content"

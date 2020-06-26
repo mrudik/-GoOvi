@@ -17,6 +17,10 @@
     <string name="points">Points</string>
     <string name="network_loading_error">Network loading error</string>
     <string name="try_again">Try again</string>
+    <string name="share">Share</string>
+    <string name="share_image">Share image</string>
+    <string name="watermark">#GoOvi</string>
+    <string name="screenshot_title">#GoOvi screenshot</string>
 
     <string name="copyright">NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2020. All Rights Reserved.</string>
 </resources>
