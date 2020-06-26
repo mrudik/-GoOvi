@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorAccentOvi</item>
         <item name="colorPrimaryTheme">@color/colorPrimaryOvi</item>
         <item name="photoPrimaryTheme">@drawable/ovi_photo</item>
-        <item name="backgroundPrimaryTheme">@drawable/background_ovi</item>
+        <item name="backgroundPrimaryTheme">@drawable/background_layer_ovi</item>
         <item name="titlePrimaryTheme">@string/alex_ovechkin_number_8</item>
         <item name="colorOppositeTheme">@color/colorPrimaryGretzky</item>
     </style>
@@ -20,7 +20,7 @@
         <item name="colorAccent">@color/colorAccentGretzky</item>
         <item name="colorPrimaryTheme">@color/colorPrimaryGretzky</item>
         <item name="photoPrimaryTheme">@drawable/gretzky_photo</item>
-        <item name="backgroundPrimaryTheme">@drawable/background_gretzky</item>
+        <item name="backgroundPrimaryTheme">@drawable/background_layer_gretzky</item>
         <item name="titlePrimaryTheme">@string/wayne_gretzky_number_99</item>
         <item name="colorOppositeTheme">@color/colorPrimaryOvi</item>
     </style>

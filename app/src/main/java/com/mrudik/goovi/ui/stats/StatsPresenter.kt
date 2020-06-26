@@ -36,6 +36,7 @@ class StatsPresenter(
         this.playerId = playerId
 
         setTitle()
+        setBackButton()
         loadTotalGoals()
         loadYearByYearStat()
         loadCopyright()
@@ -52,6 +53,12 @@ class StatsPresenter(
         when (playerId) {
             Const.OVECHKIN_PLAYER_ID -> view?.setScreenTitle(content.getAlexOvechkinTitle())
             Const.GRETZKY_PLAYER_ID -> view?.setScreenTitle(content.getWayneGretzkyTitle())
+        }
+    }
+
+    private fun setBackButton() {
+        if (playerId == Const.GRETZKY_PLAYER_ID) {
+            view?.showBackButton()
         }
     }
 

@@ -16,13 +16,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageViewPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="@dimen/player_logo_size"
+            android:layout_height="@dimen/player_logo_size"
             android:layout_marginTop="32dp"
             android:contentDescription="Player Photo"
             android:src="?attr/photoPrimaryTheme"
+            android:focusableInTouchMode="true"
             app:civ_border_color="?attr/colorPrimaryTheme"
-            app:civ_border_width="5dp"
+            app:civ_border_width="@dimen/player_logo_border_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textColor="?attr/colorPrimaryTheme"
-            android:textSize="80sp"
+            android:textSize="@dimen/player_total_goals_text_size"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -44,7 +45,7 @@
             android:id="@+id/textViewGoalsDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/standard_text_size"
             android:textColor="@color/colorTextPrimary"
             android:textAlignment="center"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -56,9 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewGoalsDescription"/>
+            app:layout_constraintTop_toBottomOf="@id/textViewGoalsDescription" />
 
         <TextView
             android:id="@+id/textViewCopyright"
@@ -66,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:padding="16dp"
-            android:textSize="10sp"
+            android:textSize="@dimen/copyright_text_size"
             android:textAlignment="center"
             android:alpha="0.5"
             app:layout_constraintLeft_toLeftOf="parent"

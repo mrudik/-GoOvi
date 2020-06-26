@@ -1,22 +1,28 @@
 package com.mrudik.goovi.ui.stats
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mrudik.goovi.Const
 import com.mrudik.goovi.R
 import com.mrudik.goovi.getThemeColor
-import com.mrudik.goovi.ui.helper.SingleClickSpan
+import com.mrudik.goovi.helper.ui.Screenshot
+import com.mrudik.goovi.helper.ui.SingleClickSpan
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearAdapter
 import com.mrudik.goovi.ui.stats.adapter.StatPerYearItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,26 +32,37 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class StatsActivity : AppCompatActivity(), StatsContract.View {
     companion object {
-        const val KEY_PLAYED_ID = "playedIdKey"
+        const val KEY_PLAYER_ID = "playerIdKey"
+        const val REQUEST_PERMISSION_STORAGE = 1000
     }
 
     @Inject
     lateinit var presenter: StatsContract.Presenter
+    @Inject
+    lateinit var screenshot: Screenshot
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val playerId = intent.getIntExtra(KEY_PLAYED_ID, Const.OVECHKIN_PLAYER_ID)
+        val playerId = intent.getIntExtra(KEY_PLAYER_ID, Const.OVECHKIN_PLAYER_ID)
         setProperTheme(playerId)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stats)
 
-        if (playerId == Const.GRETZKY_PLAYER_ID) {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
-        }
+        testScreen()
 
         presenter.takeView(this)
         presenter.start(playerId)
+    }
+
+    private fun testScreen() {
+        // TODO: Delete this
+        val metrics = resources.displayMetrics
+        Log.d("StatsActivityScreen", "width: " + metrics.widthPixels / metrics.density)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_stats_activity, menu)
+        return true
     }
 
     override fun onDestroy() {
@@ -53,11 +70,59 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
         presenter.clearView()
     }
 
+    private fun isStoragePermissionGranted() : Boolean {
+        val permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val isPermissionGranted = checkCallingPermission(permission) == PackageManager.PERMISSION_GRANTED
+        if (!isPermissionGranted) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(permission),
+                REQUEST_PERMISSION_STORAGE
+            )
+        }
+        return isPermissionGranted
+    }
+
+    private fun takeScreenshot() {
+        screenshot.take(nestedScrollView, window, object : Screenshot.Callback {
+            override fun onImageReady(uri: Uri) {
+                val shareIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "image/png"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                }
+                startActivity(
+                    Intent.createChooser(
+                        shareIntent,
+                        "Share image"
+                    )
+                )
+            }
+        })
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == REQUEST_PERMISSION_STORAGE) {
+                takeScreenshot()
+            }
+        }
+    }
+
     private fun setProperTheme(playerId: Int) {
         when (playerId) {
             Const.OVECHKIN_PLAYER_ID -> setTheme(R.style.OviTheme)
             Const.GRETZKY_PLAYER_ID -> setTheme(R.style.GretzkyTheme)
         }
+    }
+
+    override fun showBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun setScreenTitle(title: String) {
@@ -114,10 +179,19 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            android.R.id.home -> onBackPressed()
+        return when(item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.stats_menu_action_share -> {
+                if (isStoragePermissionGranted()) {
+                    takeScreenshot()
+                }
+                true
+            }
+            else -> super.onContextItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setGoalsDescriptionWithSpan(
@@ -156,7 +230,7 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
 
     override fun showGretzkyScreen() {
         val intent = Intent(this@StatsActivity, StatsActivity::class.java)
-        intent.putExtra(KEY_PLAYED_ID, Const.GRETZKY_PLAYER_ID)
+        intent.putExtra(KEY_PLAYER_ID, Const.GRETZKY_PLAYER_ID)
         startActivity(intent)
     }
 

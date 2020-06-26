@@ -21,6 +21,7 @@ interface StatsContract {
         fun showStatPerYearNotAvailableError()
         fun showCopyright(copyright: String)
         fun showGretzkyScreen()
+        fun showBackButton()
         fun closeScreen()
     }
 

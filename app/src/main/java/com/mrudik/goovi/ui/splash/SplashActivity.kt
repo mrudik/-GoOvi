@@ -63,7 +63,7 @@ class SplashActivity : AppCompatActivity(), SyncManager.SyncStatus {
         runnable = Runnable {
             if (!isFinishing) {
                 val intent = Intent(this, StatsActivity::class.java)
-                intent.putExtra(StatsActivity.KEY_PLAYED_ID, Const.OVECHKIN_PLAYER_ID)
+                intent.putExtra(StatsActivity.KEY_PLAYER_ID, Const.OVECHKIN_PLAYER_ID)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(intent)
 
