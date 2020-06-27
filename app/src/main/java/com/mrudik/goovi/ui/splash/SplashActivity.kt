@@ -41,7 +41,19 @@ class SplashActivity : AppCompatActivity(), SyncManager.SyncStatus {
     }
 
     override fun syncSucceeded() {
-        showStatsScreen()
+        handler = Handler()
+        runnable = Runnable {
+            if (!isFinishing) {
+                val intent = Intent(this, StatsActivity::class.java)
+                intent.putExtra(StatsActivity.KEY_PLAYER_ID, Const.OVECHKIN_PLAYER_ID)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+
+                finish()
+            }
+
+        }
+        handler!!.postDelayed(runnable!!, DELAY)
     }
 
     override fun syncFailed() {
@@ -56,21 +68,5 @@ class SplashActivity : AppCompatActivity(), SyncManager.SyncStatus {
                 syncManager.sync(this, this)
             }
             .show()
-    }
-
-    private fun showStatsScreen() {
-        handler = Handler()
-        runnable = Runnable {
-            if (!isFinishing) {
-                val intent = Intent(this, StatsActivity::class.java)
-                intent.putExtra(StatsActivity.KEY_PLAYER_ID, Const.OVECHKIN_PLAYER_ID)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(intent)
-
-                finish()
-            }
-
-        }
-        handler!!.postDelayed(runnable!!, DELAY)
     }
 }

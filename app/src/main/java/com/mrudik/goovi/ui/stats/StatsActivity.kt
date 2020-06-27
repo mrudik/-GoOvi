@@ -9,7 +9,6 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -48,16 +47,8 @@ class StatsActivity : AppCompatActivity(), StatsContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stats)
 
-        testScreen()
-
         presenter.takeView(this)
         presenter.start(playerId)
-    }
-
-    private fun testScreen() {
-        // TODO: Delete this
-        val metrics = resources.displayMetrics
-        Log.d("StatsActivityScreen", "width: " + metrics.widthPixels / metrics.density)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
