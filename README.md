@@ -13,3 +13,4 @@ Stack:
 9. Mockito
 10. Stetho
 11. LeakCanary
+12. JaCoCo
